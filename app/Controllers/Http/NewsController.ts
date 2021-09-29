@@ -118,7 +118,6 @@ export default class NewsController {
         included_segments: ["Subscribed Users"]
       };
       const res = await notification(message)
-      // Notification.io.emit('notifications', data)
       return response.send({ message: "notification sent successfully", status: true, data: res })
     } catch (error) {
       return response.badRequest({ message: error, status: false })
