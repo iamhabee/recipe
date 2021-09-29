@@ -17,7 +17,6 @@ export const pushNotification = async (data) => {
   var req = https.request(options, function (res) {
     res.on('data', function (data) {
       console.log(JSON.parse(data));
-
     });
   });
 
