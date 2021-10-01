@@ -12,10 +12,10 @@ export default class UsersController {
     try {
       const email = request.input('email');
       const password = request.input('password');
-      const token = await auth.use('api').attempt(email, password, { expiresIn: '7days' });
-      return token
+      const data = await auth.use('api').attempt(email, password, { expiresIn: '7days' });
+      return response.send({ data, status: true })
     } catch {
-      return response.badRequest({ message: 'Invalid credentials' })
+      return response.badRequest({ message: 'Invalid credentials', status: false })
     }
   }
 
