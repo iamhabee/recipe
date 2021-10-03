@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Profile from 'App/Models/Profile';
 import User from 'App/Models/User';
+import Application from '@ioc:Adonis/Core/Application'
 
 import { getUserAuth } from "../Traits/auth";
 
@@ -46,6 +47,37 @@ export default class ProfilesController {
       return response.created({ data: profile })
     } else {
       return response.badRequest({ message: 'user log in expired', status: false })
+    }
+  }
+
+  // update profile picture
+  public async updatePicture({ auth, response, request }: HttpContextContract) {
+    try {
+      // get user auth
+      const authData = await getUserAuth(auth)
+      if (authData) {
+        const profileImage = request.file('image_url')
+
+        if (profileImage) {
+          await profileImage.move(Application.tmpPath('profile'))
+          // persit the data
+          const updateData = {
+            image_url: profileImage.filePath
+          }
+          // update profile database
+          await Profile
+            .query()
+            .where('user_id', authData.id)
+            .update(updateData)
+          return response.created({ status: true, message: "Profile picture updated successful" })
+        } else {
+          return response.created({ status: false, message: "Profile picture updated failed" })
+        }
+      } else {
+        return response.unauthorized({ message: 'user log in expired', status: false })
+      }
+    } catch (message) {
+      return response.badRequest({ message, status: false })
     }
   }
 }

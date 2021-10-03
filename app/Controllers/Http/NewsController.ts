@@ -1,5 +1,4 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Azkar from 'App/Models/Azkar';
 import News from 'App/Models/News';
 
 import { getUserAuth } from "../Traits/auth"
@@ -54,7 +53,7 @@ export default class NewsController {
       // get user authentication
       const authData = await getUserAuth(auth)
       if (authData) {
-        const newsData = await Azkar.find(params.id)
+        const newsData = await News.find(params.id)
         return response.created({ status: true, message: "News fetched Successfully", data: newsData })
       } else {
         return response.badRequest({ message: 'user log in expired', status: false })

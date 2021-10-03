@@ -29,12 +29,21 @@ Route.group(() => {
   Route.group(() => {
     Route.post('/login', `${CTR_BASE}UsersController.login`)
     Route.post('/register', `${CTR_BASE}UsersController.register`)
+    Route.post('/forgotPassword', `${CTR_BASE}UsersController.requestForgotPassword`)
+    Route.post('/resetPassword', `${CTR_BASE}UsersController.resetPassword`)
+    Route.post('/verifyEmail', `${CTR_BASE}UsersController.verifyEmail`)
+    Route.post('/resendOtp', `${CTR_BASE}UsersController.resendOtp`)
   }).prefix('auth')
 
   Route.group(() => {
     // user profile api
     Route.get('/profile', `${CTR_BASE}ProfilesController.getCurrentUser`)
     Route.post('/profile', `${CTR_BASE}ProfilesController.updateProfile`)
+    Route.put('/profilePicture', `${CTR_BASE}ProfilesController.updatePicture`)
+
+    Route.put('/updateEmail', `${CTR_BASE}UsersController.updateEmail`)
+    Route.post('/password', `${CTR_BASE}UsersController.requestChangePassword`)
+    Route.post('/changePassword', `${CTR_BASE}UsersController.changePassword`)
 
     // azkar api
     Route.get('/azkar', `${CTR_BASE}AzkarsController.read`)

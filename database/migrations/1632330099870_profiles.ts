@@ -7,7 +7,7 @@ export default class Profiles extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
-      table.string('phone')
+      table.string('image_url')
       table.string('nick_name')
       table.string('branch')
       table.string('school')
