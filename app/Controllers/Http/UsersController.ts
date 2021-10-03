@@ -69,6 +69,7 @@ export default class UsersController {
     }
   }
 
+
   // update user name and email
   public async updateEmail({ auth, response, request }: HttpContextContract) {
     try {
