@@ -33,10 +33,20 @@ export const sendOtp = async (user_id, randomNumber, action) => {
 
 export const verifyCode = async (user_id, code) => {
   const otp = await Otp.findByOrFail('user_id', user_id)
-  if (otp.otp === Number(code)) {
+  if (otp.otp === code) {
     await otp.delete()
     return true
   } else {
     return false
+  }
+}
+
+export const getMailData = (email, subject, user, otp) => {
+  return {
+    template: 'emails/welcome',
+    params: { user, otp },
+    from: "toykampage1000@gmail.com",
+    to: email,
+    subject
   }
 }

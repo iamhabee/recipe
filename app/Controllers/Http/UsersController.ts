@@ -6,7 +6,7 @@ import Event from '@ioc:Adonis/Core/Event'
 import { emailUpdateSchema, userSchema } from '../schema/userSchema';
 import Profile from 'App/Models/Profile';
 import { getUserAuth } from '../Traits/auth';
-import { sendOtp, verifyCode } from '../Traits/SendMail';
+import { getMailData, sendOtp, verifyCode } from '../Traits/SendMail';
 
 
 export default class UsersController {
@@ -16,11 +16,15 @@ export default class UsersController {
       const email = request.input('email');
       const password = request.input('password');
       const user = await User.findBy('email', email)
-      if (user?.verify_email) {
-        const data = await auth.use('api').attempt(email, password, { expiresIn: '7days' });
-        return response.created({ message: 'Login successful', data })
+      if (user) {
+        if (user?.verify_email) {
+          const data = await auth.use('api').attempt(email, password, { expiresIn: '7days' });
+          return response.created({ message: 'Login successful', data })
+        } else {
+          return response.created({ message: 'Email not verified' })
+        }
       } else {
-        return response.created({ message: 'Email not verify' })
+        return response.badRequest({ message: 'Email is not available', status: false })
       }
     } catch {
       return response.badRequest({ message: 'Invalid credentials', status: false })
@@ -60,15 +64,14 @@ export default class UsersController {
         sex: ""
       });
       const otp = (Math.floor(Math.random() * 1000000) + 1000000).toString().substring(1);
-      const data = this.getMailData(email, "Verify your email", { fullName: `${first_name} ${last_name}` }, otp)
+      const data = getMailData(email, "Verify your email", { fullName: `${first_name} ${last_name}` }, otp)
       Event.emit('send-mail', data)
       Event.emit('send-otp', { id: userData.id, otp, type: "change" })
-      return response.created({ data: userData, message: 'Registration successful' });
+      return response.created({ data: userData, message: 'Registration successful, A one time password has been sent to your mail for verification', status: true });
     } catch (error) {
       return response.badRequest({ message: error })
     }
   }
-
 
   // update user name and email
   public async updateEmail({ auth, response, request }: HttpContextContract) {
@@ -94,7 +97,7 @@ export default class UsersController {
         // update user database
         await user.save()
         // const otp = (Math.floor(Math.random() * 1000000) + 1000000).toString().substring(1);
-        const data = this.getMailData(email, "User data update", { fullName: `${user.first_name} ${user.last_name}` }, "")
+        const data = getMailData(email, "User data update", { fullName: `${user.first_name} ${user.last_name}` }, "")
         Event.emit('send-mail', data)
         Event.emit('send-otp', { id: authData.id, otp: "", type: "change" })
         return response.created({ status: true, message: "Profile Updated successful" })
@@ -119,7 +122,7 @@ export default class UsersController {
           // verified
 
           const otp = (Math.floor(Math.random() * 1000000) + 1000000).toString().substring(1);
-          const data = this.getMailData(authData.email, "Change password request", { fullName: `${authData.first_name} ${authData.last_name}` }, otp)
+          const data = getMailData(authData.email, "Change password request", { fullName: `${authData.first_name} ${authData.last_name}` }, otp)
           Event.emit('send-mail', data)
           Event.emit('send-otp', { id: authData.id, otp, type: "change" })
           return response.created({ status: true, message: "A one time password has been send to your mail to change your password" })
@@ -150,7 +153,7 @@ export default class UsersController {
           user.password = password
           // update user database
           await user.save()
-          const data = this.getMailData(user.email, "Password changed notifiction", { fullName: `${user.first_name} ${user.last_name}` }, "")
+          const data = getMailData(user.email, "Password changed notifiction", { fullName: `${user.first_name} ${user.last_name}` }, "")
           Event.emit('send-mail', data)
           Event.emit('send-otp', { id: user.id, otp: "", type: "change" })
           return response.created({ status: true, message: "User password changed" })
@@ -174,7 +177,7 @@ export default class UsersController {
       if (user) {
         // verified
         const otp = (Math.floor(Math.random() * 1000000) + 1000000).toString().substring(1);
-        const data = this.getMailData(email, "Request forgot password", { fullName: `${user.first_name} ${user.last_name}` }, otp)
+        const data = getMailData(email, "Request forgot password", { fullName: `${user.first_name} ${user.last_name}` }, otp)
         Event.emit('send-mail', data)
         Event.emit('send-otp', { id: user.id, otp, type: "forgot" })
         return response.created({ status: true, message: "A one time password has been send to your mail to reset your password" })
@@ -202,7 +205,7 @@ export default class UsersController {
         // update user database
         await user?.save()
         // const otp = (Math.floor(Math.random() * 1000000) + 1000000).toString().substring(1);
-        const data = this.getMailData(email, "Password reset notification", { fullName: `${user.first_name} ${user.last_name}` }, "")
+        const data = getMailData(email, "Password reset notification", { fullName: `${user.first_name} ${user.last_name}` }, "")
         Event.emit('send-mail', data)
         Event.emit('send-otp', { id: user.id, otp: "", type: "forgot" })
         return response.created({ status: true, message: "User password reset" })
@@ -229,7 +232,7 @@ export default class UsersController {
         // update user database
         await user?.save()
         // const otp = (Math.floor(Math.random() * 1000000) + 1000000).toString().substring(1);
-        const data = this.getMailData(email, "Email verified notifiction", { fullName: `${user.first_name} ${user.last_name}` }, "otp")
+        const data = getMailData(email, "Email verified notifiction", { fullName: `${user.first_name} ${user.last_name}` }, "otp")
         Event.emit('send-mail', data)
         Event.emit('send-otp', { id: user.id, otp: "", type: "change" })
         return response.created({ status: true, message: "Email verify successful" })
@@ -250,7 +253,7 @@ export default class UsersController {
       const user: any = await User.findBy('email', email)
       if (user) {
         const otp = (Math.floor(Math.random() * 1000000) + 1000000).toString().substring(1);
-        const data = this.getMailData(email, "Token resend", { fullName: `${user.first_name} ${user.last_name}` }, otp)
+        const data = getMailData(email, "Token resend", { fullName: `${user.first_name} ${user.last_name}` }, otp)
         const res = await sendOtp(user.id, otp, "resend")
         if (res) {
           Event.emit('send-mail', data)
@@ -266,13 +269,4 @@ export default class UsersController {
     }
   }
 
-  getMailData = (email, subject, user, otp) => {
-    return {
-      template: 'emails/welcome',
-      params: { user, otp },
-      from: "toykampage1000@gmail.com",
-      to: email,
-      subject
-    }
-  }
 }

@@ -1,14 +1,14 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Reciters extends BaseSchema {
-  protected tableName = 'reciters'
+export default class Requests extends BaseSchema {
+  protected tableName = 'requests'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
-      table.string('status').defaultTo('enabled')
-      table.string('level')
+      table.integer('mentor_id')
+      table.integer('mentee_id')
+      table.string('status').defaultTo("pending")
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

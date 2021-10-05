@@ -57,6 +57,27 @@ Route.group(() => {
     Route.get('/news', `${CTR_BASE}NewsController.read`)
     Route.get('/news/:id', `${CTR_BASE}NewsController.readOne`)
 
+    // reciter api
+    Route.get('/reciter', `${CTR_BASE}RecitersController.read`)
+    Route.get('/reciter/:id', `${CTR_BASE}RecitersController.readOne`)
+
+    // mentor api
+    Route.get('/mentor', `${CTR_BASE}MentorsController.read`)
+    Route.get('/mentor/:id', `${CTR_BASE}MentorsController.readOne`)
+
+    // mentor / mentee
+    Route.post('/request', `${CTR_BASE}ClassroomsController.sendRequest`)
+    Route.post('/acceptOrDecline', `${CTR_BASE}ClassroomsController.acceptOrDeclineRequest`)
+    Route.get('/request/:mentor_id/:mentee_id', `${CTR_BASE}ClassroomsController.getRequests`)
+    Route.get('/request/:id', `${CTR_BASE}ClassroomsController.getRequest`)
+
+    // schedules
+    Route.post('/schedule', `${CTR_BASE}ClassroomsController.scheduleClass`)
+    Route.get('/schedule', `${CTR_BASE}ClassroomsController.getClassSchedules`)
+    Route.get('/schedule/:id/:mentee_id/:mentor_id', `${CTR_BASE}ClassroomsController.getClassSchedule`)
+    Route.delete('/schedule/:id', `${CTR_BASE}ClassroomsController.deleteSchedule`)
+
+
     Route.group(() => {
       // only admin can create update and delete branch
       Route.post('/branch', `${CTR_BASE}BranchesController.create`)
@@ -74,7 +95,15 @@ Route.group(() => {
       Route.put('/azkar/:id', `${CTR_BASE}AzkarsController.update`)
       Route.delete('/azkar/:id', `${CTR_BASE}AzkarsController.delete`)
 
-    }).middleware("admin:api");
+      // only admin can create and delete reciters
+      Route.post('/reciter', `${CTR_BASE}RecitersController.create`)
+      Route.delete('/reciter/:id', `${CTR_BASE}RecitersController.delete`)
+
+      // only admin can create and delete mentors
+      Route.post('/mentor', `${CTR_BASE}MentorsController.create`)
+      Route.delete('/mentor/:id', `${CTR_BASE}MentorsController.delete`)
+
+    }).middleware("admin");
   }).middleware("auth:api");
 
 }).prefix('api')
