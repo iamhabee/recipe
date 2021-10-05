@@ -19,7 +19,7 @@ export default class UsersController {
       if (user) {
         if (user?.verify_email) {
           const data = await auth.use('api').attempt(email, password, { expiresIn: '7days' });
-          return response.created({ message: 'Login successful', data })
+          return response.created({ message: 'Login successful', data, status: true })
         } else {
           return response.created({ message: 'Email not verified' })
         }
