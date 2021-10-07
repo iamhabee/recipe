@@ -1,13 +1,19 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
-import Profile from './Profile'
+import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+// import Profile from './Profile'
+import User from './User'
 
 export default class Request extends BaseModel {
 
-  @hasOne(() => Profile, {
+  @belongsTo(() => User, {
     foreignKey: 'mentor_id', // defaults to userId
   })
-  public profile: HasOne<typeof Profile>
+  public mentor: BelongsTo<typeof User>
+
+  @belongsTo(() => User, {
+    foreignKey: 'mentee_id', // defaults to userId
+  })
+  public mentee: BelongsTo<typeof User>
 
   @column({ isPrimary: true })
   public id: number
@@ -19,10 +25,16 @@ export default class Request extends BaseModel {
   public mentee_id: number
 
   @column()
-  public message: string
+  public mentor_status: string
 
   @column()
-  public status: string
+  public mentee_status: string
+
+  @column()
+  public mentor_comment: string
+
+  @column()
+  public mentee_comment: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

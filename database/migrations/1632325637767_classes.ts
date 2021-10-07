@@ -6,8 +6,15 @@ export default class Classes extends BaseSchema {
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('mentor_id').unsigned().references('profiles.user_id').onDelete('CASCADE')
-      table.integer('mentee_id').unsigned().references('profiles.user_id').onDelete('CASCADE')
+      table.integer('mentor_id').unsigned().references('users.id').onDelete('CASCADE')
+      table.integer('mentee_id').unsigned().references('users.id').onDelete('CASCADE')
+      table.string('objectives')
+      table.string('mentor_report')
+      table.string('mentee_report')
+      table.integer('mentee_ratings')
+      table.integer('mentor_ratings')
+      table.string('mentor_comment')
+      table.string('mentee_comment')
       table.string('status')
       table.dateTime('schedule_date')
 

@@ -21,10 +21,10 @@ export default class UsersController {
           const data = await auth.use('api').attempt(email, password, { expiresIn: '7days' });
           return response.created({ message: 'Login successful', data, status: true })
         } else {
-          return response.created({ message: 'Email not verified' })
+          return response.created({ message: 'Email not verified', status: false })
         }
       } else {
-        return response.badRequest({ message: 'Email is not available', status: false })
+        return response.unauthorized({ message: 'Email is not available', status: false })
       }
     } catch {
       return response.badRequest({ message: 'Invalid credentials', status: false })

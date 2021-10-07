@@ -6,10 +6,11 @@ export default class classes extends BaseModel {
   @belongsTo(() => User, {
     foreignKey: 'mentor_id',
   })
+  public mentor: BelongsTo<typeof User>
   @belongsTo(() => User, {
     foreignKey: 'mentee_id',
   })
-  public user: BelongsTo<typeof User>
+  public mentee: BelongsTo<typeof User>
 
   @column({ isPrimary: true })
   public id: number
@@ -19,6 +20,27 @@ export default class classes extends BaseModel {
 
   @column()
   public mentee_id: number
+
+  @column()
+  public mentor_report: string
+
+  @column()
+  public mentee_report: string
+
+  @column()
+  public mentor_comment: string
+
+  @column()
+  public mentee_comment: string
+
+  @column()
+  public mentor_ratings: number
+
+  @column()
+  public mentee_ratings: number
+
+  @column()
+  public objectives: string
 
   @column()
   public status: string

@@ -1,17 +1,16 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Requests extends BaseSchema {
-  protected tableName = 'requests'
+export default class Chats extends BaseSchema {
+  protected tableName = 'chats'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('mentor_id')
-      table.integer('mentee_id')
-      table.string('mentor_status').defaultTo("pending")
-      table.string('mentee_status').defaultTo("pending")
-      table.string('mentor_comment')
-      table.string('mentee_comment')
+      table.integer('sender_id')
+      table.integer('recipient_id')
+      table.string('message')
+      table.string('message_type')
+      table.string('file_path')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

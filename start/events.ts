@@ -17,3 +17,7 @@ Event.on('send-otp', async (data) => {
 Event.on('send-mail', async (data) => {
   await sendMail(data)
 })
+
+Event.on('mentor-mentee-request', async (data) => {
+  await sendMail(data)
+})
