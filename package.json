@@ -2,6 +2,10 @@
   "name": "academy",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "14.17.3",
+    "npm": "6.14.13"
+  },
   "scripts": {
     "dev": "node ace serve --watch",
     "build": "node ace build --production",
