@@ -32,7 +32,7 @@ export default class MentorsController {
       // get user authentication
       const authData = await getUserAuth(auth)
       if (authData) {
-        const data = await Mentor.query().preload("profile")
+        const data = await Mentor.query().preload("user")
         return response.created({ status: true, message: "Mentor fetched Successfully", data })
       } else {
         return response.unauthorized({ message: 'user log in expired', status: false })
@@ -49,7 +49,7 @@ export default class MentorsController {
       const authData = await getUserAuth(auth)
       if (authData) {
         const data = await Mentor.find(params.id)
-        await data?.load('profile')
+        await data?.load('user')
         return response.created({ status: true, message: "Mentor fetched Successfully", data })
       } else {
         return response.unauthorized({ message: 'user log in expired', status: false })
