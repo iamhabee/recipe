@@ -66,10 +66,11 @@ Route.group(() => {
     Route.get('/mentor/:id', `${CTR_BASE}MentorsController.readOne`)
 
     // mentor / mentee
-    Route.post('/acceptOrDecline', `${CTR_BASE}ClassroomsController.acceptOrDeclineRequest`)
-    Route.get('/request/:id', `${CTR_BASE}ClassroomsController.getRequest`)
-    Route.get('/myMentors', `${CTR_BASE}ClassroomsController.getMyMentor`)
-    Route.get('/myMentees', `${CTR_BASE}ClassroomsController.getMyMentee`)
+    Route.post('/acceptOrDecline', `${CTR_BASE}ClassroomsController.acceptOrDeclineRequest`) // accept / decline request by mentor/mentee
+    Route.get('/request/:id', `${CTR_BASE}ClassroomsController.getRequest`) //fetch single request details
+    Route.get('/myMentors', `${CTR_BASE}ClassroomsController.getMyMentor`) // fetch my mentors
+    Route.get('/myMentees', `${CTR_BASE}ClassroomsController.getMyMentee`) // fetch my mentees
+    Route.get('/userRequest', `${CTR_BASE}ClassroomsController.getUserRequest`) // fetch mentor / mentee request in pending
 
     // schedules
     Route.post('/schedule', `${CTR_BASE}ClassroomsController.scheduleClass`)
@@ -109,7 +110,7 @@ Route.group(() => {
       Route.post('/request', `${CTR_BASE}ClassroomsController.sendRequest`)
       Route.get('/request', `${CTR_BASE}ClassroomsController.getRequests`)
 
-    }).middleware("admin");
+    }).middleware("admin").prefix('admin');
   }).middleware("auth:api");
 
 }).prefix('api')

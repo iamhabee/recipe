@@ -7,6 +7,7 @@ import Request from 'App/Models/Request'
 import { getMailData } from '../Traits/SendMail'
 import User from 'App/Models/User'
 import Classes from 'App/Models/Classes'
+import Mentor from 'App/Models/Mentor'
 
 export default class ClassroomsController {
 
@@ -38,13 +39,21 @@ export default class ClassroomsController {
     try {
       if (authData) {
         const { mentor_id, mentee_id, message } = request.body()
-        const mentor = await User.find(mentor_id)
+        // check if mentor exists
+        // const mentor = await User.findBy('user_id', mentor_id)
+        const mentor = await <any>Mentor.find(mentor_id)
+        await mentor?.load('user')
         const mentee = await User.find(mentee_id)
         if (mentor && mentee) {
-          await Request.create({ mentor_id, mentee_id });
-          const data = getMailData(mentor?.email, message, { firstname: mentor.first_name }, "")
-          Event.emit('mentor-mentee-request', data)
-          return response.created({ message: 'Request sent successful', status: true });
+          const req = await Request.query().where('mentee_id', mentee_id).andWhere('mentor_id', mentor.user.user_id)
+          if (req) {
+            await Request.create({ mentor_id, mentee_id });
+            const data = getMailData(mentor?.email, message, { firstname: mentor.first_name }, "")
+            Event.emit('mentor-mentee-request', data)
+            return response.created({ message: 'Request sent successful', status: true });
+          } else {
+            return response.created({ message: 'They are currently assigned to each other', status: false })
+          }
         } else {
           return response.created({ message: 'Mentor or mentee not found', status: false });
         }
@@ -52,6 +61,7 @@ export default class ClassroomsController {
         return response.unauthorized({ message: 'user log in expired', status: false })
       }
     } catch (error) {
+      console.log(error)
       return response.badRequest({ message: error, status: false });
     }
   }
@@ -96,6 +106,22 @@ export default class ClassroomsController {
       }
     } catch (error) {
       console.log(error)
+      return response.badRequest({ message: error, status: false })
+    }
+  }
+
+  // fetch all my mentor request
+  public async getUserRequest({ auth, response }: HttpContextContract) {
+    try {
+      // get user authentication
+      const authData = await getUserAuth(auth)
+      if (authData) {
+        const data = await Request.query().where('mentee_id', authData.id).orWhere('mentor_id', authData.id).andWhere('mentee_status', 'PENDING').orWhere('mentor_status', 'PENDING').preload("mentor").preload('mentee')
+        return response.created({ status: true, message: "My requests fetched Successfully", data })
+      } else {
+        return response.badRequest({ message: 'user log in expired', status: false })
+      }
+    } catch (error) {
       return response.badRequest({ message: error, status: false })
     }
   }

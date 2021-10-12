@@ -1,13 +1,14 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
-import Profile from './Profile'
+import { BaseModel, belongsTo, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+// import Profile from './Profile'
+import User from './User'
 
 export default class Mentor extends BaseModel {
 
-  @hasOne(() => Profile, {
+  @belongsTo(() => User, {
     foreignKey: 'user_id', // defaults to userId
   })
-  public profile: HasOne<typeof Profile>
+  public user: BelongsTo<typeof User>
 
   @column({ isPrimary: true })
   public id: number
