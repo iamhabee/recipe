@@ -1,13 +1,16 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Otps extends BaseSchema {
-  protected tableName = 'otps'
+export default class Educations extends BaseSchema {
+  protected tableName = 'educations'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
-      table.string('otp')
+      table.string('school_name')
+      table.string('course')
+      table.string('grade')
+      table.date('from')
+      table.date('to')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

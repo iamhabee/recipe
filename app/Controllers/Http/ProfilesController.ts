@@ -1,6 +1,5 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Profile from 'App/Models/Profile';
-import User from 'App/Models/User';
 import Application from '@ioc:Adonis/Core/Application'
 
 import { getUserAuth } from "../Traits/auth";
@@ -11,27 +10,13 @@ export default class ProfilesController {
   public async updateProfile({ auth, response, request }: HttpContextContract) {
     const authData = await getUserAuth(auth)
     if (authData) {
-      const updateData = {
-        phone: request.input('phone'),
-        nick_name: request.input('nick_name'),
-        branch: request.input('branch'),
-        school: request.input('school'),
-        class: request.input('class'),
-        course_of_study: request.input('course_of_study'),
-        qualification: request.input('qualification'),
-        no_of_children: request.input('no_of_children'),
-        social_media: request.input('social_media'),
-        skills: request.input('skills'),
-        availability_status: request.input('availability_status'),
-        marital_status: request.input('marital_status'),
-        post: request.input('post'),
-        address: request.input('address'),
-        sex: request.input('sex')
+      const { instagram, image, short_description, long_description, address, event, facebook, facebook_follower, family, instagram_follower, marital_status, phone, religion, twitter, twitter_follower } = request.body()
+      let img
+      if (image) {
+        await image.move(Application.tmpPath('profile'))
+        img = image.filePath
       }
-      await Profile
-        .query()
-        .where('user_id', authData.id)
-        .update(updateData)
+      await Profile.create({ instagram, image: img, short_description, long_description, address, event, facebook, facebook_follower, family, instagram_follower, marital_status, phone, religion, twitter, twitter_follower })
       return response.created({ status: true, message: "Profile Updated successful" })
     } else {
       return response.badRequest({ message: 'user log in expired', status: false })
@@ -39,14 +24,14 @@ export default class ProfilesController {
   }
 
   // get current user profile
-  public async getCurrentUser({ auth, response }: HttpContextContract) {
-    const authData = await getUserAuth(auth)
-    if (authData) {
-      const profile = await User.find(authData.id)
-      await profile?.load('profile')
-      return response.created({ data: profile })
-    } else {
-      return response.badRequest({ message: 'user log in expired', status: false })
+  public async getCurrentUser({ response }: HttpContextContract) {
+    // const authData = await getUserAuth(auth)
+    // if (authData) {
+    try {
+      const data = await Profile.find(1)
+      return response.created({ data, message: "profile fetched successful", status: true })
+    } catch (error) {
+      return response.badRequest({ message: 'error ', status: false })
     }
   }
 

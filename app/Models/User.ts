@@ -38,9 +38,6 @@ export default class User extends BaseModel {
   public password: string
 
   @column()
-  public verify_email: boolean
-
-  @column()
   public rememberMeToken?: string
 
   @column.dateTime({ autoCreate: true })

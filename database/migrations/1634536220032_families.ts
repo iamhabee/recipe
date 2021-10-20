@@ -1,15 +1,18 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
-export default class Branches extends BaseSchema {
-  protected tableName = 'branches'
+export default class Families extends BaseSchema {
+  protected tableName = 'families'
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.string('branch_name')
-      table.string('branch_address')
-      table.integer('user_id').unsigned().references('users.id').onDelete('CASCADE')
-      table.integer('no_of_members')
+      table.string('relationship', 50).notNullable()
+      table.string('first_name', 100).notNullable()
+      table.string('last_name', 100).notNullable()
+      table.string('occupation', 50).notNullable()
+      table.string('short_description', 255).notNullable()
+      table.string('long_description').notNullable()
+      table.string('image')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

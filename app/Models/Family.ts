@@ -1,33 +1,30 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class Azkar extends BaseModel {
+export default class Family extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public title: string
+  public relationship: string
 
   @column()
-  public description: string
+  public first_name: string
 
   @column()
-  public azkar_text: string
+  public last_name: string
 
   @column()
-  public azkar_translation: string
+  public occupation: string
 
   @column()
-  public azkar_transliteration: string
+  public short_description: string
 
   @column()
-  public duration: number
+  public long_description: string
 
   @column()
-  public time: number
-
-  @column()
-  public audio_file: string
+  public image: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

@@ -7,61 +7,49 @@ export default class Profile extends BaseModel {
   public id: number
 
   @column()
-  public user_id: number
+  public image: string
 
   @column()
-  public image_url: string
-
-  @column()
-  public nick_name: string
-
-  @column()
-  public branch: string
-
-  @column()
-  public school: string
-
-  @column()
-  public class: string
-
-  @column()
-  public course_of_study: string
-
-  @column()
-  public qualification: string
-
-  @column()
-  public no_of_mentor: number
-
-  @column()
-  public no_of_mentee: number
-
-  @column()
-  public social_media: string
-
-  @column()
-  public skills: string
-
-  @column()
-  public spiritual_level: number
-
-  @column()
-  public availability_status: string
+  public short_description: string
 
   @column()
   public marital_status: string
 
   @column()
-  public no_of_children: number
+  public long_description: string
 
   @column()
-  public post: string
+  public family: string
+
+  @column()
+  public event: number
+
+  @column()
+  public religion: string
 
   @column()
   public address: string
 
   @column()
-  public sex: string
+  public phone: string
+
+  @column()
+  public facebook: string
+
+  @column()
+  public facebook_follower: string
+
+  @column()
+  public twitter: string
+
+  @column()
+  public twitter_follower: string
+
+  @column()
+  public instagram: string
+
+  @column()
+  public instagram_follower: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
