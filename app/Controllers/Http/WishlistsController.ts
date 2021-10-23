@@ -8,8 +8,9 @@ export default class WishlistsController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { image, description, title } = request.body()
+        const { description, title } = request.body()
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('wishlists'))
           img = image.filePath
@@ -80,9 +81,10 @@ export default class WishlistsController {
     try {
       const authData = await getUserAuth(auth)
       if (authData) {
-        const { image, description, title, id } = request.body()
+        const { description, title, id } = request.body()
         const data: any = await Wishlist.find(id)
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('wishlists'))
           img = image.filePath

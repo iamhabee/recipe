@@ -8,8 +8,9 @@ export default class HobbiesController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { image, description, name } = request.body()
+        const { description, name } = request.body()
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('hobbies'))
           img = image.filePath
@@ -47,9 +48,10 @@ export default class HobbiesController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { description, name, image, id } = request.body()
+        const { description, name, id } = request.body()
         const data: any = await Hobby.find(id)
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('hobbies'))
           img = image.filePath

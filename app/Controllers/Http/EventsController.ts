@@ -8,8 +8,9 @@ export default class EventsController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { date, description, image, location, occassion, title } = request.body()
+        const { date, description, location, occassion, title } = request.body()
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('events'))
           img = image.filePath
@@ -47,9 +48,10 @@ export default class EventsController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { date, description, image, location, occassion, title, id } = request.body()
+        const { date, description, location, occassion, title, id } = request.body()
         const data: any = await Event.find(id)
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('events'))
           img = image.filePath

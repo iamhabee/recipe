@@ -10,8 +10,9 @@ export default class ProfilesController {
   public async updateProfile({ auth, response, request }: HttpContextContract) {
     const authData = await getUserAuth(auth)
     if (authData) {
-      const { instagram, image, short_description, long_description, address, event, facebook, facebook_follower, family, instagram_follower, marital_status, phone, religion, twitter, twitter_follower } = request.body()
+      const { instagram, short_description, long_description, address, event, facebook, facebook_follower, family, instagram_follower, marital_status, phone, religion, twitter, twitter_follower } = request.body()
       let img
+      const image = request.file('image')
       if (image) {
         await image.move(Application.tmpPath('profile'))
         img = image.filePath

@@ -9,8 +9,9 @@ export default class FamiliesController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { first_name, last_name, long_description, occupation, relationship, short_description, image } = request.body()
+        const { first_name, last_name, long_description, occupation, relationship, short_description } = request.body()
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('families'))
           img = image.filePath
@@ -48,9 +49,10 @@ export default class FamiliesController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { first_name, last_name, long_description, occupation, relationship, short_description, image, id } = request.body()
+        const { first_name, last_name, long_description, occupation, relationship, short_description, id } = request.body()
         const data: any = await Family.find(id)
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('families'))
           img = image.filePath

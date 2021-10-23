@@ -8,8 +8,9 @@ export default class WorksController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { title, image, description, to, from, company_name } = request.body()
+        const { title, description, to, from, company_name } = request.body()
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('works'))
           img = image.filePath
@@ -47,9 +48,10 @@ export default class WorksController {
     const authData = await getUserAuth(auth)
     try {
       if (authData) {
-        const { title, image, description, to, from, company_name, id } = request.body()
+        const { title, description, to, from, company_name, id } = request.body()
         const data: any = await Work.find(id)
         let img
+        const image = request.file('image')
         if (image) {
           await image.move(Application.tmpPath('works'))
           img = image.filePath
