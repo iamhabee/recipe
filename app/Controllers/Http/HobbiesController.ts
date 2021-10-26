@@ -1,7 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Application from '@ioc:Adonis/Core/Application'
 import Hobby from 'App/Models/Hobby'
 import { getUserAuth } from '../Traits/auth'
+import Drive from '@ioc:Adonis/Core/Drive'
+import { cuid } from '@ioc:Adonis/Core/Helpers'
 
 export default class HobbiesController {
   public async create({ request, response, auth }: HttpContextContract) {
@@ -12,8 +13,12 @@ export default class HobbiesController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('hobbies'))
-          img = image.filePath
+          const path = './images/hobbies'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          img = await Drive.getUrl('images/hobbies' + fileName)
         }
         await Hobby.create({ image: img, description, name })
         return response.created({ status: true, message: "Hobby created successful" })
@@ -50,12 +55,14 @@ export default class HobbiesController {
       if (authData) {
         const { description, name, id } = request.body()
         const data: any = await Hobby.find(id)
-        let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.publicPath('hobbies'))
-          img = image.filePath
-          data.image = img
+          const path = './images/hobbies'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          data.image = await Drive.getUrl('images/hobbies' + fileName)
         }
         data.name = name
         data.description = description
@@ -85,3 +92,5 @@ export default class HobbiesController {
     }
   }
 }
+
+

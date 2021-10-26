@@ -1,7 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Event from 'App/Models/Event'
 import { getUserAuth } from '../Traits/auth'
-import Application from '@ioc:Adonis/Core/Application'
+import Drive from '@ioc:Adonis/Core/Drive'
+import { cuid } from '@ioc:Adonis/Core/Helpers'
 
 export default class EventsController {
   public async create({ request, response, auth }: HttpContextContract) {
@@ -12,8 +13,12 @@ export default class EventsController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.publicPath("event"))
-          img = image.filePath
+          const path = './images/events'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          img = await Drive.getUrl('images/events' + fileName)
         }
         await Event.create({ date, description, image: img, location, occassion, title })
         return response.created({ status: true, message: "Event created successful" })
@@ -50,18 +55,20 @@ export default class EventsController {
       if (authData) {
         const { date, description, location, occassion, title, id } = request.body()
         const data: any = await Event.find(id)
-        let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('events'))
-          img = image.filePath
+          const path = './images/events'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          data.image = await Drive.getUrl('images/events' + fileName)
         }
         data.date = date
         data.description = description
         data.location = location
         data.occassion = occassion
         data.title = title
-        data.image = img
         data.save()
         return response.created({ status: true, message: "Education updated successful" })
       } else {

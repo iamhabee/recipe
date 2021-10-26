@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Profile from 'App/Models/Profile';
-import Application from '@ioc:Adonis/Core/Application'
+import Drive from '@ioc:Adonis/Core/Drive'
+import { cuid } from '@ioc:Adonis/Core/Helpers'
 
 import { getUserAuth } from "../Traits/auth";
 
@@ -14,8 +15,12 @@ export default class ProfilesController {
       let img
       const image = request.file('image')
       if (image) {
-        await image.move(Application.publicPath('profile'))
-        img = image.filePath
+        const path = './images/profile'
+        const fileName = cuid() + '.' + image.extname
+        image!.moveToDisk(path, {
+          overwrite: true, name: fileName
+        })
+        img = await Drive.getUrl('images/profile' + fileName)
       }
       await Profile.create({ instagram, image: img, short_description, long_description, address, event, facebook, facebook_follower, family, instagram_follower, marital_status, phone, religion, twitter, twitter_follower })
       return response.created({ status: true, message: "Profile Updated successful" })
@@ -45,10 +50,14 @@ export default class ProfilesController {
         const profileImage = request.file('image_url')
 
         if (profileImage) {
-          await profileImage.move(Application.tmpPath('profile'))
-          // persit the data
+          const path = './images/profile'
+          const fileName = cuid() + '.' + profileImage.extname
+          profileImage!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          let img = await Drive.getUrl('images/profile' + fileName)
           const updateData = {
-            image_url: profileImage.filePath
+            image_url: img
           }
           // update profile database
           await Profile

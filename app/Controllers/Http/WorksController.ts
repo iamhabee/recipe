@@ -1,7 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Application from '@ioc:Adonis/Core/Application'
 import Work from 'App/Models/Work'
 import { getUserAuth } from '../Traits/auth'
+import Drive from '@ioc:Adonis/Core/Drive'
+import { cuid } from '@ioc:Adonis/Core/Helpers'
 
 export default class WorksController {
   public async create({ request, response, auth }: HttpContextContract) {
@@ -12,8 +13,12 @@ export default class WorksController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('works'))
-          img = image.filePath
+          const path = './images/works'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          img = await Drive.getUrl('images/works' + fileName)
         }
         await Work.create({ title, image: img, description, to, from, company_name })
         return response.created({ status: true, message: "Work created successful" })
@@ -50,12 +55,14 @@ export default class WorksController {
       if (authData) {
         const { title, description, to, from, company_name, id } = request.body()
         const data: any = await Work.find(id)
-        let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.publicPath('works'))
-          img = image.filePath
-          data.image = img
+          const path = './images/families'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          data.image = await Drive.getUrl('images/families' + fileName)
         }
         data.title = title
         data.description = description

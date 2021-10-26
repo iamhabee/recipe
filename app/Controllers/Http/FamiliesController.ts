@@ -1,7 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Application from '@ioc:Adonis/Core/Application'
 import { getUserAuth } from '../Traits/auth'
 import Family from 'App/Models/Family'
+import Drive from '@ioc:Adonis/Core/Drive'
+import { cuid } from '@ioc:Adonis/Core/Helpers'
 
 export default class FamiliesController {
 
@@ -13,8 +14,12 @@ export default class FamiliesController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('families'))
-          img = image.filePath
+          const path = './images/families'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          img = await Drive.getUrl('images/families' + fileName)
         }
         await Family.create({ image: img, first_name, last_name, long_description, occupation, relationship, short_description })
         return response.created({ status: true, message: "Family created successful" })
@@ -51,12 +56,14 @@ export default class FamiliesController {
       if (authData) {
         const { first_name, last_name, long_description, occupation, relationship, short_description, id } = request.body()
         const data: any = await Family.find(id)
-        let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.publicPath('families'))
-          img = image.filePath
-          data.image = img
+          const path = './images/families'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          data.image = await Drive.getUrl('images/families' + fileName)
         }
         data.first_name = first_name
         data.last_name = last_name

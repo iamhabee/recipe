@@ -1,7 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Application from '@ioc:Adonis/Core/Application'
 import Wishlist from 'App/Models/Wishlist'
 import { getUserAuth } from "../Traits/auth"
+import Drive from '@ioc:Adonis/Core/Drive'
+import { cuid } from '@ioc:Adonis/Core/Helpers'
 
 export default class WishlistsController {
   public async create({ request, response, auth }: HttpContextContract) {
@@ -12,8 +13,12 @@ export default class WishlistsController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.publicPath('wishlists'))
-          img = image.filePath
+          const path = './images/wishlist'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          img = await Drive.getUrl('images/wishlist' + fileName)
         }
         await Wishlist.create({ description, image: img, title })
         return response.created({ status: true, message: "Wishlist created successful" })
@@ -83,12 +88,14 @@ export default class WishlistsController {
       if (authData) {
         const { description, title, id } = request.body()
         const data: any = await Wishlist.find(id)
-        let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('wishlists'))
-          img = image.filePath
-          data.image = img
+          const path = './images/wishlist'
+          const fileName = cuid() + '.' + image.extname
+          image!.moveToDisk(path, {
+            overwrite: true, name: fileName
+          })
+          data.image = await Drive.getUrl('images/wishlist' + fileName)
         }
         data.title = title
         data.description = description
