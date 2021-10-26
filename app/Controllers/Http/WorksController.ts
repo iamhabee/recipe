@@ -53,7 +53,7 @@ export default class WorksController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('works'))
+          await image.move(Application.publicPath('works'))
           img = image.filePath
           data.image = img
         }

@@ -54,7 +54,7 @@ export default class FamiliesController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('families'))
+          await image.move(Application.publicPath('families'))
           img = image.filePath
           data.image = img
         }

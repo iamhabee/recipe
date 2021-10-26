@@ -14,7 +14,7 @@ export default class ProfilesController {
       let img
       const image = request.file('image')
       if (image) {
-        await image.move(Application.tmpPath('profile'))
+        await image.move(Application.publicPath('profile'))
         img = image.filePath
       }
       await Profile.create({ instagram, image: img, short_description, long_description, address, event, facebook, facebook_follower, family, instagram_follower, marital_status, phone, religion, twitter, twitter_follower })

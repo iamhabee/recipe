@@ -12,7 +12,7 @@ export default class WishlistsController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('wishlists'))
+          await image.move(Application.publicPath('wishlists'))
           img = image.filePath
         }
         await Wishlist.create({ description, image: img, title })

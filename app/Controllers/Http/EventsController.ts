@@ -12,7 +12,7 @@ export default class EventsController {
         let img
         const image = request.file('image')
         if (image) {
-          await image.move(Application.tmpPath('events'))
+          await image.move(Application.publicPath("event"))
           img = image.filePath
         }
         await Event.create({ date, description, image: img, location, occassion, title })
