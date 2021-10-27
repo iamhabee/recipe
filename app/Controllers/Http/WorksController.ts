@@ -13,12 +13,12 @@ export default class WorksController {
         let img
         const image = request.file('image')
         if (image) {
-          const path = './images/works'
+          const path = './works'
           const fileName = cuid() + '.' + image.extname
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          img = await Drive.getUrl('images/works' + fileName)
+          img = await Drive.getUrl('/works' + fileName)
         }
         await Work.create({ title, image: img, description, to, from, company_name })
         return response.created({ status: true, message: "Work created successful" })
@@ -57,12 +57,12 @@ export default class WorksController {
         const data: any = await Work.find(id)
         const image = request.file('image')
         if (image) {
-          const path = './images/families'
+          const path = './families/'
           const fileName = cuid() + '.' + image.extname
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          data.image = await Drive.getUrl('images/families' + fileName)
+          data.image = await Drive.getUrl('/families/' + fileName)
         }
         data.title = title
         data.description = description

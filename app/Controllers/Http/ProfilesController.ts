@@ -15,12 +15,12 @@ export default class ProfilesController {
       let img
       const image = request.file('image')
       if (image) {
-        const path = './images/profile'
+        const path = './profile/'
         const fileName = cuid() + '.' + image.extname
         image!.moveToDisk(path, {
           overwrite: true, name: fileName
         })
-        img = await Drive.getUrl('images/profile' + fileName)
+        img = await Drive.getUrl('/profile/' + fileName)
       }
       await Profile.create({ instagram, image: img, short_description, long_description, address, event, facebook, facebook_follower, family, instagram_follower, marital_status, phone, religion, twitter, twitter_follower })
       return response.created({ status: true, message: "Profile Updated successful" })
@@ -50,12 +50,12 @@ export default class ProfilesController {
         const profileImage = request.file('image_url')
 
         if (profileImage) {
-          const path = './images/profile'
+          const path = './profile'
           const fileName = cuid() + '.' + profileImage.extname
           profileImage!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          let img = await Drive.getUrl('images/profile' + fileName)
+          let img = await Drive.getUrl('/profile' + fileName)
           const updateData = {
             image_url: img
           }

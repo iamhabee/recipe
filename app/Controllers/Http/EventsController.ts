@@ -13,12 +13,12 @@ export default class EventsController {
         let img
         const image = request.file('image')
         if (image) {
-          const path = './images/events'
+          const path = './events/'
           const fileName = cuid() + '.' + image.extname
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          img = await Drive.getUrl('images/events' + fileName)
+          img = await Drive.getUrl('/events/' + fileName)
         }
         await Event.create({ date, description, image: img, location, occassion, title })
         return response.created({ status: true, message: "Event created successful" })
@@ -57,12 +57,12 @@ export default class EventsController {
         const data: any = await Event.find(id)
         const image = request.file('image')
         if (image) {
-          const path = './images/events'
+          const path = './events/'
           const fileName = cuid() + '.' + image.extname
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          data.image = await Drive.getUrl('images/events' + fileName)
+          data.image = await Drive.getUrl('/events/' + fileName)
         }
         data.date = date
         data.description = description
