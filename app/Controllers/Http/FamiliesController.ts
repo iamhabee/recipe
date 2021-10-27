@@ -19,7 +19,7 @@ export default class FamiliesController {
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          img = await Drive.getUrl('/families/' + fileName)
+          img = await Drive.getUrl('families/' + fileName)
         }
         await Family.create({ image: img, first_name, last_name, long_description, occupation, relationship, short_description })
         return response.created({ status: true, message: "Family created successful" })
@@ -63,7 +63,7 @@ export default class FamiliesController {
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          data.image = await Drive.getUrl('/families/' + fileName)
+          data.image = await Drive.getUrl('families/' + fileName)
         }
         data.first_name = first_name
         data.last_name = last_name

@@ -18,7 +18,7 @@ export default class WishlistsController {
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          img = await Drive.getUrl('/wishlist/' + fileName)
+          img = await Drive.getUrl('wishlist/' + fileName)
         }
         await Wishlist.create({ description, image: img, title })
         return response.created({ status: true, message: "Wishlist created successful" })
@@ -90,12 +90,12 @@ export default class WishlistsController {
         const data: any = await Wishlist.find(id)
         const image = request.file('image')
         if (image) {
-          const path = './wishlist'
+          const path = './wishlist/'
           const fileName = cuid() + '.' + image.extname
           image!.moveToDisk(path, {
             overwrite: true, name: fileName
           })
-          data.image = await Drive.getUrl('/wishlist' + fileName)
+          data.image = await Drive.getUrl('wishlist/' + fileName)
         }
         data.title = title
         data.description = description
